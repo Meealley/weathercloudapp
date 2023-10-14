@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'additonal_info.dart';
+import 'hourly_forecast.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -123,54 +126,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    SizedBox(
-                      width: 100,
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "03:00",
-                                style: GoogleFonts.epilogue(
-                                    textStyle: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Icon(Icons.cloud),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Text(
-                                "320.12",
-                                style: GoogleFonts.epilogue(
-                                    textStyle: TextStyle(fontSize: 14)),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
+                    HourlyForecastItem(),
+                    HourlyForecastItem(),
+                    HourlyForecastItem(),
+                    HourlyForecastItem(),
+                    HourlyForecastItem(),
+                    HourlyForecastItem(),
                   ],
                 ),
+              ),
+
+              SizedBox(
+                height: 12,
+              ),
+
+              // This is for the additional information
+              Text(
+                "Additional Information",
+                style: GoogleFonts.epilogue(
+                  textStyle: const TextStyle(fontSize: 20),
+                ),
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  AdditionalInfo(),
+                  AdditionalInfo(),
+                  AdditionalInfo()
+                ],
               )
             ],
           ),
         ),
       ),
     );
-  }
-}
-
-class HourlyForecastItem extends StatelessWidget {
-  const HourlyForecastItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }
