@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_app/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'additonal_info.dart';
 import 'hourly_forecast.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              print("clicked on the button");
+              setState(() {});
             },
             icon: const Icon(Icons.refresh),
           ),
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             final data = snapshot.data!;
-// final currentWeatherData = data['list']
+            // final currentWeatherData = data['list']
             final currentTemp = data['list'][0]['main']['temp'];
             final location = data['city']['name'];
             final currentSky = data['list'][0]['weather'][0]['main'];
@@ -108,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    height: 220,
+                    height: 200,
                     child: Card(
                       elevation: 3,
                       child: Padding(
@@ -129,11 +130,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
+                            SizedBox(
+                              height: 8,
+                            ),
                             Text(
                               '$currentTemp K ',
                               style: GoogleFonts.epilogue(
                                 textStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 28),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28,
+                                ),
                               ),
                             ),
                             Icon(
@@ -170,42 +176,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 15,
                   ),
 
-                  // this scrollable list
-                  const SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        HourlyForecastItem(
-                          icon: Icons.cloud,
-                          time: "07:00",
-                          temperature: '310',
-                        ),
-                        HourlyForecastItem(
-                          icon: Icons.sunny,
-                          time: "09:00",
-                          temperature: '230',
-                        ),
-                        HourlyForecastItem(
-                          icon: Icons.cloud,
-                          time: "12:00",
-                          temperature: '257',
-                        ),
-                        HourlyForecastItem(
-                          icon: Icons.sunny_snowing,
-                          time: "14:00",
-                          temperature: '208',
-                        ),
-                        HourlyForecastItem(
-                          icon: Icons.cloud,
-                          time: "05:00",
-                          temperature: '220',
-                        ),
-                      ],
+                  SizedBox(
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        final hourlyForecast = data['list'][index + 1];
+
+                        final hourlyTime =
+                            DateTime.parse(hourlyForecast['dt_txt'].toString());
+                        return HourlyForecastItem(
+                            time: DateFormat.j().format(hourlyTime),
+                            temperature:
+                                hourlyForecast['main']['temp'].toString(),
+                            icon: hourlyForecast['weather'][0]['main'] ==
+                                        "Clouds" ||
+                                    hourlyForecast['weather'][0]['main'] ==
+                                        "Rain"
+                                ? Icons.cloud
+                                : Icons.sunny);
+                      },
                     ),
                   ),
 
                   const SizedBox(
-                    height: 12,
+                    height: 20,
                   ),
 
                   // This is for the additional information
