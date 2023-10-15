@@ -89,17 +89,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.bold, fontSize: 28),
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.cloud,
                           size: 63,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Text(
                           'Rain',
                           style: GoogleFonts.epilogue(
-                            textStyle: TextStyle(fontSize: 19),
+                            textStyle: const TextStyle(fontSize: 19),
                           ),
                         )
                       ],
@@ -117,26 +117,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   textStyle: const TextStyle(fontSize: 20),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
 
               // this scrollable list
-              SingleChildScrollView(
+              const SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    HourlyForecastItem(),
-                    HourlyForecastItem(),
-                    HourlyForecastItem(),
-                    HourlyForecastItem(),
-                    HourlyForecastItem(),
-                    HourlyForecastItem(),
+                    HourlyForecastItem(
+                      icon: Icons.cloud,
+                      time: "07:00",
+                      temperature: '310',
+                    ),
+                    HourlyForecastItem(
+                      icon: Icons.sunny,
+                      time: "09:00",
+                      temperature: '230',
+                    ),
+                    HourlyForecastItem(
+                      icon: Icons.cloud,
+                      time: "12:00",
+                      temperature: '257',
+                    ),
+                    HourlyForecastItem(
+                      icon: Icons.sunny_snowing,
+                      time: "14:00",
+                      temperature: '208',
+                    ),
+                    HourlyForecastItem(
+                      icon: Icons.cloud,
+                      time: "05:00",
+                      temperature: '220',
+                    ),
                   ],
                 ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
 
@@ -147,15 +166,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   textStyle: const TextStyle(fontSize: 20),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  AdditionalInfo(),
-                  AdditionalInfo(),
-                  AdditionalInfo()
+                  AdditionalInfo(
+                    icon: Icons.water_drop,
+                    label: "Humidity",
+                    value: "90",
+                  ),
+                  AdditionalInfo(
+                    icon: Icons.waves,
+                    label: 'Pressure',
+                    value: '1000',
+                  ),
+                  AdditionalInfo(
+                    icon: Icons.air,
+                    label: "Wind Speed",
+                    value: "7.8",
+                  )
                 ],
               )
             ],

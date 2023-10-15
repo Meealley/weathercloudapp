@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HourlyForecastItem extends StatelessWidget {
-  const HourlyForecastItem({super.key});
+  final String time;
+  final String temperature;
+  final IconData icon;
+
+  const HourlyForecastItem(
+      {super.key,
+      required this.time,
+      required this.temperature,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -14,21 +22,22 @@ class HourlyForecastItem extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              "03:00",
+              time,
               style: GoogleFonts.epilogue(
-                  textStyle:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
             ),
-            SizedBox(
+            const SizedBox(
               height: 6,
             ),
-            Icon(Icons.cloud),
-            SizedBox(
+            Icon(icon),
+            const SizedBox(
               height: 6,
             ),
             Text(
-              "320.12",
-              style: GoogleFonts.epilogue(textStyle: TextStyle(fontSize: 14)),
+              temperature,
+              style: GoogleFonts.epilogue(
+                  textStyle: const TextStyle(fontSize: 14)),
             )
           ],
         ),

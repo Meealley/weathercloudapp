@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AdditionalInfo extends StatelessWidget {
+  final IconData icon;
+
+  final String label;
+  final String value;
+
   const AdditionalInfo({
     super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
   });
 
   @override
@@ -11,22 +19,22 @@ class AdditionalInfo extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Humidity",
+          label,
           style: GoogleFonts.epilogue(
-            textStyle: TextStyle(fontSize: 17),
+            textStyle: const TextStyle(fontSize: 17),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
-        Icon(Icons.water_drop),
-        SizedBox(
+        Icon(icon),
+        const SizedBox(
           height: 8,
         ),
         Text(
-          "90",
+          value,
           style: GoogleFonts.epilogue(
-            textStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
           ),
         ),
       ],
