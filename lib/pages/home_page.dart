@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:cloud_app/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'additonal_info.dart';
 import 'hourly_forecast.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +16,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future getCurrentWeather() async {
+    String cityName = "Nigeria";
+
+    try {
+      final res = await http.get(
+        Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$OPENWEATHERAPIKEY',
+        ),
+      );
+      final data = jsonDecode(res.body);
+      if (data['cod'] != '200') {
+        throw data['message'];
+      }
+      data['list'][0]['main']['temp'];
+      print(data['city']['name']);
+
+      // print(res.body);
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,158 +65,172 @@ class _HomeScreenState extends State<HomeScreen> {
         onWillPop: () async {
           return false;
         },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Weather confirmation",
-                style: GoogleFonts.epilogue(
-                    textStyle: const TextStyle(fontSize: 19)),
-              ),
-              // Main card
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 220,
-                child: Card(
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: FutureBuilder(
+          future: getCurrentWeather(),
+          builder: (context, snapshot) {
+            print(snapshot);
+            print(snapshot.runtimeType);
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator.adaptive());
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  snapshot.error.toString(),
+                  style: GoogleFonts.epilogue(),
+                ),
+              );
+            }
+
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Weather confirmation",
+                    style: GoogleFonts.epilogue(
+                        textStyle: const TextStyle(fontSize: 19)),
+                  ),
+                  // Main card
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 220,
+                    child: Card(
+                      elevation: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text(
-                                  "Current Weather",
-                                  style: GoogleFonts.spaceGrotesk(fontSize: 16),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Current Location : ",
+                                      style: GoogleFonts.spaceGrotesk(
+                                          fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  onPressed: () {
-                                    print("eyes");
-                                  },
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_outlined),
-                                )
                               ],
                             ),
+                            Text(
+                              '200 K ',
+                              style: GoogleFonts.epilogue(
+                                textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 28),
+                              ),
+                            ),
+                            const Icon(
+                              Icons.cloud,
+                              size: 63,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Rain',
+                              style: GoogleFonts.epilogue(
+                                textStyle: const TextStyle(fontSize: 19),
+                              ),
+                            )
                           ],
                         ),
-                        Text(
-                          '300 F',
-                          style: GoogleFonts.epilogue(
-                            textStyle: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 28),
-                          ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "Weather Forecast ",
+                    style: GoogleFonts.epilogue(
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+
+                  // this scrollable list
+                  const SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        HourlyForecastItem(
+                          icon: Icons.cloud,
+                          time: "07:00",
+                          temperature: '310',
                         ),
-                        const Icon(
-                          Icons.cloud,
-                          size: 63,
+                        HourlyForecastItem(
+                          icon: Icons.sunny,
+                          time: "09:00",
+                          temperature: '230',
                         ),
-                        const SizedBox(
-                          height: 10,
+                        HourlyForecastItem(
+                          icon: Icons.cloud,
+                          time: "12:00",
+                          temperature: '257',
                         ),
-                        Text(
-                          'Rain',
-                          style: GoogleFonts.epilogue(
-                            textStyle: const TextStyle(fontSize: 19),
-                          ),
-                        )
+                        HourlyForecastItem(
+                          icon: Icons.sunny_snowing,
+                          time: "14:00",
+                          temperature: '208',
+                        ),
+                        HourlyForecastItem(
+                          icon: Icons.cloud,
+                          time: "05:00",
+                          temperature: '220',
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ),
 
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Weather Forecast ",
-                style: GoogleFonts.epilogue(
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-
-              // this scrollable list
-              const SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    HourlyForecastItem(
-                      icon: Icons.cloud,
-                      time: "07:00",
-                      temperature: '310',
-                    ),
-                    HourlyForecastItem(
-                      icon: Icons.sunny,
-                      time: "09:00",
-                      temperature: '230',
-                    ),
-                    HourlyForecastItem(
-                      icon: Icons.cloud,
-                      time: "12:00",
-                      temperature: '257',
-                    ),
-                    HourlyForecastItem(
-                      icon: Icons.sunny_snowing,
-                      time: "14:00",
-                      temperature: '208',
-                    ),
-                    HourlyForecastItem(
-                      icon: Icons.cloud,
-                      time: "05:00",
-                      temperature: '220',
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(
-                height: 12,
-              ),
-
-              // This is for the additional information
-              Text(
-                "Additional Information",
-                style: GoogleFonts.epilogue(
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  AdditionalInfo(
-                    icon: Icons.water_drop,
-                    label: "Humidity",
-                    value: "90",
+                  const SizedBox(
+                    height: 12,
                   ),
-                  AdditionalInfo(
-                    icon: Icons.waves,
-                    label: 'Pressure',
-                    value: '1000',
+
+                  // This is for the additional information
+                  Text(
+                    "Additional Information",
+                    style: GoogleFonts.epilogue(
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
                   ),
-                  AdditionalInfo(
-                    icon: Icons.air,
-                    label: "Wind Speed",
-                    value: "7.8",
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      AdditionalInfo(
+                        icon: Icons.water_drop,
+                        label: "Humidity",
+                        value: "90",
+                      ),
+                      AdditionalInfo(
+                        icon: Icons.waves,
+                        label: 'Pressure',
+                        value: '1000',
+                      ),
+                      AdditionalInfo(
+                        icon: Icons.air,
+                        label: "Wind Speed",
+                        value: "7.8",
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
