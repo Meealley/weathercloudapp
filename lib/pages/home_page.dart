@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future getCurrentWeather() async {
+  Future<Map<String, dynamic>> getCurrentWeather() async {
     String cityName = "Nigeria";
 
     try {
@@ -29,9 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (data['cod'] != '200') {
         throw data['message'];
       }
-      data['list'][0]['main']['temp'];
-      print(data['city']['name']);
-
+      // data['list'][0]['main']['temp'];
+      // print(data['city']['name']);
+      return data;
       // print(res.body);
     } catch (e) {
       throw e.toString();
@@ -83,6 +83,15 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
+            final data = snapshot.data!;
+// final currentWeatherData = data['list']
+            final currentTemp = data['list'][0]['main']['temp'];
+            final location = data['city']['name'];
+            final currentSky = data['list'][0]['weather'][0]['main'];
+            final currentPressure = data['list'][0]['main']['pressure'];
+            final currentHumidity = data['list'][0]['main']['humidity'];
+            final currentWind = data['list'][0]['wind']['speed'];
+
             return Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -112,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Current Location : ",
+                                      "Current Location : $location",
                                       style: GoogleFonts.spaceGrotesk(
                                           fontSize: 16),
                                     ),
@@ -121,21 +130,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                             Text(
-                              '200 K ',
+                              '$currentTemp K ',
                               style: GoogleFonts.epilogue(
                                 textStyle: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 28),
                               ),
                             ),
-                            const Icon(
-                              Icons.cloud,
+                            Icon(
+                              currentSky == 'Clouds' || currentSky == "Rain"
+                                  ? Icons.cloud
+                                  : Icons.sunny,
                               size: 63,
                             ),
                             const SizedBox(
                               height: 10,
                             ),
                             Text(
-                              'Rain',
+                              currentSky,
                               style: GoogleFonts.epilogue(
                                 textStyle: const TextStyle(fontSize: 19),
                               ),
@@ -207,23 +218,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 12,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       AdditionalInfo(
                         icon: Icons.water_drop,
                         label: "Humidity",
-                        value: "90",
+                        value: currentHumidity.toString(),
                       ),
                       AdditionalInfo(
                         icon: Icons.waves,
                         label: 'Pressure',
-                        value: '1000',
+                        value: currentPressure.toString(),
                       ),
                       AdditionalInfo(
                         icon: Icons.air,
                         label: "Wind Speed",
-                        value: "7.8",
+                        value: currentWind.toString(),
                       )
                     ],
                   )
